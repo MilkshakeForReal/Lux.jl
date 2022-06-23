@@ -31,7 +31,9 @@ include("core.jl")
 # Data Transfer Utilities
 include("adapt.jl")
 # Layer Implementations
-include("layers/basic.jl")
+include("layers/dense.jl")
+include("layers/container.jl")
+include("layers/misc.jl")
 include("layers/normalize.jl")
 include("layers/conv.jl")
 include("layers/dropout.jl")
