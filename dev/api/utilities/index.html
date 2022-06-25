@@ -15,7 +15,7 @@
         <link rel="canonical" href="http://lux.csail.mit.edu/api/utilities/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.6">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.8">
     
     
       
@@ -23,7 +23,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.4a0965b7.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.1d29e8d0.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.cbb835fc.min.css">
@@ -375,22 +375,36 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../examples/examples/" class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
     
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" type="checkbox" id="__nav_3_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_3_1">
+        <label class="md-nav__link" for="__nav_3_2">
           Beginner
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Beginner" data-md-level="2">
-        <label class="md-nav__title" for="__nav_3_1">
+        <label class="md-nav__title" for="__nav_3_2">
           <span class="md-nav__icon md-icon"></span>
           Beginner
         </label>
@@ -440,18 +454,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_3_2">
+        <label class="md-nav__link" for="__nav_3_3">
           Intermediate
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Intermediate" data-md-level="2">
-        <label class="md-nav__title" for="__nav_3_2">
+        <label class="md-nav__title" for="__nav_3_3">
           <span class="md-nav__icon md-icon"></span>
           Intermediate
         </label>
@@ -492,20 +506,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/examples/" class="md-nav__link">
-        Other Examples
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -541,6 +541,20 @@
           Manual
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../manual/interface/" class="md-nav__link">
+        Lux Interface
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -859,13 +873,13 @@
 <div class="highlight"><pre><span></span><code><span class="n">cpu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>Transfer <code>x</code> to CPU</p>
-<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/ecc5dc5d86c603a429a4372bc2f13b360fb8a60c/src/adapt.jl#L37-L41' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/15863da6f39f136bb5c22511b4e5be50e4a51b85/src/adapt.jl#L37-L41' class='documenter-source'>source</a><br></p>
 <p><a id='Lux.gpu' href='#Lux.gpu'>#</a>
 <strong><code>Lux.gpu</code></strong> &mdash; <em>Function</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">gpu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>Transfer <code>x</code> to GPU</p>
-<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/ecc5dc5d86c603a429a4372bc2f13b360fb8a60c/src/adapt.jl#L44-L48' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/15863da6f39f136bb5c22511b4e5be50e4a51b85/src/adapt.jl#L44-L48' class='documenter-source'>source</a><br></p>
 <p><a id='Initialization'></a></p>
 <p><a id='Initialization-1'></a></p>
 <h2 id="initialization">Initialization<a class="headerlink" href="#initialization" title="Permanent link">¤</a></h2>
@@ -876,7 +890,7 @@
 <p>Return an <code>Array{Float32}</code> of the given <code>size</code> containing random numbers drawn from a normal distribution with standard deviation <code>gain * sqrt(2 / (fan_in + fan_out))</code>. This method is described in [1] and also known as Xavier initialization.</p>
 <p><strong>References</strong></p>
 <p>[1] Glorot, Xavier, and Yoshua Bengio. "Understanding the difficulty of training deep feedforward neural networks." <em>Proceedings of the thirteenth international conference on artificial intelligence and statistics</em>. 2010.</p>
-<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/ecc5dc5d86c603a429a4372bc2f13b360fb8a60c/src/utils.jl#L49-L61' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/15863da6f39f136bb5c22511b4e5be50e4a51b85/src/utils.jl#L49-L61' class='documenter-source'>source</a><br></p>
 <p><a id='Lux.glorot_uniform' href='#Lux.glorot_uniform'>#</a>
 <strong><code>Lux.glorot_uniform</code></strong> &mdash; <em>Function</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">glorot_uniform</span><span class="p">(</span><span class="n">rng</span><span class="o">::</span><span class="kt">AbstractRNG</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">...</span><span class="p">;</span><span class="w"> </span><span class="n">gain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
@@ -884,19 +898,19 @@
 <p>Return an <code>Array{Float32}</code> of the given <code>size</code> containing random numbers drawn from a uniform distribution on the interval <span class="arithmatex">\([-x, x]\)</span>, where <code>x = gain * sqrt(6 / (fan_in + fan_out))</code>. This method is described in [1] and also known as Xavier initialization.</p>
 <p><strong>References</strong></p>
 <p>[1] Glorot, Xavier, and Yoshua Bengio. "Understanding the difficulty of training deep feedforward neural networks." <em>Proceedings of the thirteenth international conference on artificial intelligence and statistics</em>. 2010.</p>
-<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/ecc5dc5d86c603a429a4372bc2f13b360fb8a60c/src/utils.jl#L30-L43' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/15863da6f39f136bb5c22511b4e5be50e4a51b85/src/utils.jl#L30-L43' class='documenter-source'>source</a><br></p>
 <p><a id='Lux.ones32' href='#Lux.ones32'>#</a>
 <strong><code>Lux.ones32</code></strong> &mdash; <em>Function</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">ones32</span><span class="p">(</span><span class="n">rng</span><span class="o">::</span><span class="kt">AbstractRNG</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">...</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="kt">Float32</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">...</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>Return an <code>Array{Float32}</code> of ones of the given <code>size</code>. (<code>rng</code> is ignored)</p>
-<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/ecc5dc5d86c603a429a4372bc2f13b360fb8a60c/src/utils.jl#L20-L24' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/15863da6f39f136bb5c22511b4e5be50e4a51b85/src/utils.jl#L20-L24' class='documenter-source'>source</a><br></p>
 <p><a id='Lux.zeros32' href='#Lux.zeros32'>#</a>
 <strong><code>Lux.zeros32</code></strong> &mdash; <em>Function</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">zeros32</span><span class="p">(</span><span class="n">rng</span><span class="o">::</span><span class="kt">AbstractRNG</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">...</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="kt">Float32</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">...</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>Return an <code>Array{Float32}</code> of zeros of the given <code>size</code>. (<code>rng</code> is ignored)</p>
-<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/ecc5dc5d86c603a429a4372bc2f13b360fb8a60c/src/utils.jl#L13-L17' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/15863da6f39f136bb5c22511b4e5be50e4a51b85/src/utils.jl#L13-L17' class='documenter-source'>source</a><br></p>
 <p><a id='Miscellaneous-Utilities'></a></p>
 <p><a id='Miscellaneous-Utilities-1'></a></p>
 <h2 id="miscellaneous-utilities">Miscellaneous Utilities<a class="headerlink" href="#miscellaneous-utilities" title="Permanent link">¤</a></h2>
@@ -905,19 +919,19 @@
 <div class="highlight"><pre><span></span><code><span class="n">applyactivation</span><span class="p">(</span><span class="n">f</span><span class="o">::</span><span class="kt">Function</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">::</span><span class="kt">AbstractArray</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>Apply the function <code>f</code> on <code>x</code> elementwise, i.e. <code>f.(x)</code>. Dispatches to CUDNN if possible.</p>
-<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/ecc5dc5d86c603a429a4372bc2f13b360fb8a60c/src/nnlib.jl#L202-L206' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/15863da6f39f136bb5c22511b4e5be50e4a51b85/src/nnlib.jl#L202-L206' class='documenter-source'>source</a><br></p>
 <p><a id='Lux.elementwise_add' href='#Lux.elementwise_add'>#</a>
 <strong><code>Lux.elementwise_add</code></strong> &mdash; <em>Function</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">elementwise_add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>Computes <code>x .+ y</code>. Dispatches to CUDNN if possible</p>
-<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/ecc5dc5d86c603a429a4372bc2f13b360fb8a60c/src/nnlib.jl#L228-L232' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/15863da6f39f136bb5c22511b4e5be50e4a51b85/src/nnlib.jl#L228-L232' class='documenter-source'>source</a><br></p>
 <p><a id='Lux.elementwise_mul' href='#Lux.elementwise_mul'>#</a>
 <strong><code>Lux.elementwise_mul</code></strong> &mdash; <em>Function</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">elementwise_mul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>Computes <code>x .* y</code>. Dispatches to CUDNN if possible</p>
-<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/ecc5dc5d86c603a429a4372bc2f13b360fb8a60c/src/nnlib.jl#L243-L247' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/15863da6f39f136bb5c22511b4e5be50e4a51b85/src/nnlib.jl#L243-L247' class='documenter-source'>source</a><br></p>
 <p><a id='RNN-Utilities'></a></p>
 <p><a id='RNN-Utilities-1'></a></p>
 <h2 id="rnn-utilities">RNN Utilities<a class="headerlink" href="#rnn-utilities" title="Permanent link">¤</a></h2>
@@ -926,7 +940,7 @@
 <div class="highlight"><pre><span></span><code><span class="n">multigate</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">AbstractArray</span><span class="p">,</span><span class="w"> </span><span class="o">::</span><span class="kt">Val</span><span class="p">{</span><span class="kt">N</span><span class="p">})</span><span class="w"></span>
 </code></pre></div>
 <p>Split up <code>x</code> into <code>N</code> equally sized chunks (along dimension <code>1</code>).</p>
-<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/ecc5dc5d86c603a429a4372bc2f13b360fb8a60c/src/utils.jl#L202-L206' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/avik-pal/Lux.jl/blob/15863da6f39f136bb5c22511b4e5be50e4a51b85/src/utils.jl#L202-L206' class='documenter-source'>source</a><br></p>
 <p><a id='Index'></a></p>
 <p><a id='Index-1'></a></p>
 <h2 id="index">Index<a class="headerlink" href="#index" title="Permanent link">¤</a></h2>
@@ -1009,10 +1023,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "toc.integrate", "header.autohide"], "search": "../../assets/javascripts/workers/search.85cb4492.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "toc.integrate", "header.autohide"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a877e258.min.js"></script>
+      <script src="../../assets/javascripts/bundle.0238f547.min.js"></script>
       
         <script src="../../_static/mathjax.js"></script>
       

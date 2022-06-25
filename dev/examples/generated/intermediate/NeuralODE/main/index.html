@@ -15,7 +15,7 @@
         <link rel="canonical" href="http://lux.csail.mit.edu/examples/generated/intermediate/NeuralODE/main/">
       
       <link rel="icon" href="../../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.6">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.8">
     
     
       
@@ -23,7 +23,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.4a0965b7.min.css">
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.1d29e8d0.min.css">
       
         
         <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.cbb835fc.min.css">
@@ -377,22 +377,36 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../../../examples/" class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
     
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" type="checkbox" id="__nav_3_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_3_1">
+        <label class="md-nav__link" for="__nav_3_2">
           Beginner
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Beginner" data-md-level="2">
-        <label class="md-nav__title" for="__nav_3_1">
+        <label class="md-nav__title" for="__nav_3_2">
           <span class="md-nav__icon md-icon"></span>
           Beginner
         </label>
@@ -444,18 +458,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" checked>
       
       
       
       
-        <label class="md-nav__link" for="__nav_3_2">
+        <label class="md-nav__link" for="__nav_3_3">
           Intermediate
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Intermediate" data-md-level="2">
-        <label class="md-nav__title" for="__nav_3_2">
+        <label class="md-nav__title" for="__nav_3_3">
           <span class="md-nav__icon md-icon"></span>
           Intermediate
         </label>
@@ -572,20 +586,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../../examples/" class="md-nav__link">
-        Other Examples
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -621,6 +621,20 @@
           Manual
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../manual/interface/" class="md-nav__link">
+        Lux Interface
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -976,11 +990,11 @@
 <h2 id="define-utility-functions">Define Utility Functions<a class="headerlink" href="#define-utility-functions" title="Permanent link">¤</a></h2>
 <div class="highlight"><pre><span></span><code><span class="n">get_class</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">argmax</span><span class="o">.</span><span class="p">(</span><span class="n">eachcol</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"></span>
 
-<span class="n">logitcrossentropy</span><span class="p">(</span><span class="n">ŷ</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="o">-</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">logsoftmax</span><span class="p">(</span><span class="n">ŷ</span><span class="p">);</span><span class="w"> </span><span class="n">dims</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
+<span class="n">logitcrossentropy</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="o">-</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">logsoftmax</span><span class="p">(</span><span class="n">y_pred</span><span class="p">);</span><span class="w"> </span><span class="n">dims</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
 
 <span class="k">function</span><span class="w"> </span><span class="n">loss</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">ps</span><span class="p">,</span><span class="w"> </span><span class="n">st</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">ŷ</span><span class="p">,</span><span class="w"> </span><span class="n">st</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">ps</span><span class="p">,</span><span class="w"> </span><span class="n">st</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">logitcrossentropy</span><span class="p">(</span><span class="n">ŷ</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">st</span><span class="w"></span>
+<span class="w">    </span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">st</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">ps</span><span class="p">,</span><span class="w"> </span><span class="n">st</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">logitcrossentropy</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">st</span><span class="w"></span>
 <span class="k">end</span><span class="w"></span>
 
 <span class="k">function</span><span class="w"> </span><span class="n">accuracy</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">ps</span><span class="p">,</span><span class="w"> </span><span class="n">st</span><span class="p">,</span><span class="w"> </span><span class="n">dataloader</span><span class="p">)</span><span class="w"></span>
@@ -1043,15 +1057,15 @@
 └ @ MLDatasets ~/.julia/packages/MLDatasets/a6Tj1/src/datasets/vision/mnist.jl:157
 ┌ Warning: MNIST.trainlabels() is deprecated, use `MNIST(split=:train).targets` instead.
 └ @ MLDatasets ~/.julia/packages/MLDatasets/a6Tj1/src/datasets/vision/mnist.jl:173
-[1/9]    Time 2.1s   Training Accuracy: 51.7%    Test Accuracy: 44.0%
-[2/9]    Time 0.14s      Training Accuracy: 71.04%   Test Accuracy: 66.67%
-[3/9]    Time 0.11s      Training Accuracy: 78.07%   Test Accuracy: 72.0%
-[4/9]    Time 0.21s      Training Accuracy: 79.93%   Test Accuracy: 73.33%
-[5/9]    Time 0.16s      Training Accuracy: 82.89%   Test Accuracy: 78.0%
-[6/9]    Time 0.12s      Training Accuracy: 84.52%   Test Accuracy: 78.67%
+[1/9]    Time 1.78s      Training Accuracy: 51.7%    Test Accuracy: 44.0%
+[2/9]    Time 0.21s      Training Accuracy: 71.04%   Test Accuracy: 66.67%
+[3/9]    Time 0.12s      Training Accuracy: 78.07%   Test Accuracy: 72.0%
+[4/9]    Time 0.19s      Training Accuracy: 79.93%   Test Accuracy: 73.33%
+[5/9]    Time 0.1s   Training Accuracy: 82.89%   Test Accuracy: 78.0%
+[6/9]    Time 0.15s      Training Accuracy: 84.52%   Test Accuracy: 78.67%
 [7/9]    Time 0.13s      Training Accuracy: 85.78%   Test Accuracy: 80.67%
-[8/9]    Time 0.17s      Training Accuracy: 86.81%   Test Accuracy: 81.33%
-[9/9]    Time 0.16s      Training Accuracy: 87.48%   Test Accuracy: 82.67%
+[8/9]    Time 0.11s      Training Accuracy: 86.81%   Test Accuracy: 81.33%
+[9/9]    Time 0.13s      Training Accuracy: 87.48%   Test Accuracy: 82.67%
 </code></pre></div>
 <hr />
 <p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p>
@@ -1122,10 +1136,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../../../..", "features": ["navigation.sections", "toc.integrate", "header.autohide"], "search": "../../../../../assets/javascripts/workers/search.85cb4492.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../../../..", "features": ["navigation.sections", "toc.integrate", "header.autohide"], "search": "../../../../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../../../../assets/javascripts/bundle.a877e258.min.js"></script>
+      <script src="../../../../../assets/javascripts/bundle.0238f547.min.js"></script>
       
         <script src="../../../../../_static/mathjax.js"></script>
       
