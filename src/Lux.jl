@@ -27,6 +27,8 @@ const use_cuda = Ref{Union{Nothing, Bool}}(nothing)
 
 # Utilities
 include("utils.jl")
+# Compat
+include("compat/componentarrays.jl")
 # Core
 include("core.jl")
 # Data Transfer Utilities
