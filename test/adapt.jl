@@ -48,8 +48,9 @@ end
 end
 
 @testset "ComponentArray Broadcast" begin for T in [Float64, Float32, Int64, Int32]
+    _zero(x) = ComponentArray(zero(getdata(x)), getaxes(x))
     ps = ComponentArray(; w=ones(T, 3), b=ones(T, 4))
-    @test ps .* zero(T) == zero(ps)
+    @test ps .* zero(T) == _zero(ps)
     ps_g = ps |> gpu
-    @test ps_g .* zero(T) == zero(ps_g)
+    @test ps_g .* zero(T) == _zero(ps_g)
 end end
