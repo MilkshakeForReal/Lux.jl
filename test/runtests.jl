@@ -1,4 +1,4 @@
-using SafeTestsets, Test, Pkg
+using Pkg, SafeTestsets, Test
 
 const GROUP = get(ENV, "GROUP", "All")
 
@@ -15,7 +15,7 @@ function activate_subpkg_env(subpkg)
 end
 
 groups = if GROUP == "All"
-    ["Lux", "Boltz"]
+    ["Lux", "Boltz", "LuxLib", "Flux2Lux"]
 else
     [GROUP]
 end
@@ -32,6 +32,7 @@ end
 
             @testset "Layers" begin
                 @time @safetestset "Basic" begin include("layers/basic.jl") end
+                @time @safetestset "Containers" begin include("layers/containers.jl") end
                 @time @safetestset "Convolution" begin include("layers/conv.jl") end
                 @time @safetestset "Normalization" begin include("layers/normalize.jl") end
                 @time @safetestset "Recurrent" begin include("layers/recurrent.jl") end
@@ -42,7 +43,11 @@ end
 
             @time @safetestset "Automatic Differentiation" begin include("autodiff.jl") end
 
-            @testset "Experimental" begin @time @safetestset "Training" begin include("contrib/training.jl") end end
+            @testset "Experimental" begin
+                @time @safetestset "Map" begin include("contrib/map.jl") end
+                @time @safetestset "Training" begin include("contrib/training.jl") end
+                @time @safetestset "Freeze" begin include("contrib/freeze.jl") end
+            end
         end
     else
         dev_subpkg(group)

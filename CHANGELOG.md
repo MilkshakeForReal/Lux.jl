@@ -1,8 +1,27 @@
 # v0.4
 
+## v0.4.23
+
+  - Introduces `allow_fast_activation` for layers which store activation functions.
+
+## v0.4.22
+
+  - `Chain` supports indexing.
+  - Introduces an API for freezing model parameters.
+
+## v0.4.20
+
+  - Introduces `Lux.@layer_map` and `Lux.layer_map` for mapping over layers.
+  - Allows `fmap`-ping over layers.
+
+## v0.4.19
+
+  - Generic Container layers (like `Chain`, `Parallel`, etc.) can now used custom naming for
+    their internal layers.
+
 ## v0.4.17
 
-  - Major breakcing change in experimental Recurrent Cell Implementations.
+  - Major breaking change in experimental Recurrent Cell Implementations.
 
 ## v0.4.14
   - Deprecate `bias` in favor of `use_bias` for `RNNCell`.

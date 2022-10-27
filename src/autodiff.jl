@@ -1,55 +1,17 @@
 # Non Differentiable Functions
 ChainRulesCore.@non_differentiable replicate(::Any)
-ChainRulesCore.@non_differentiable update_statistics(::Any, ::Any, ::Any, ::Any, ::Any,
-                                                     ::Any, ::Any)
-ChainRulesCore.@non_differentiable generate_dropout_mask(::Any, ::Any, ::Any, ::Any)
-ChainRulesCore.@non_differentiable _get_reshape_dims(::Any, ::Any)
 ChainRulesCore.@non_differentiable compute_adaptive_pooling_dims(::Any, ::Any)
 ChainRulesCore.@non_differentiable glorot_normal(::Any...)
 ChainRulesCore.@non_differentiable glorot_uniform(::Any...)
 ChainRulesCore.@non_differentiable check_use_cuda()
 ChainRulesCore.@non_differentiable istraining(::Any)
 ChainRulesCore.@non_differentiable _get_norm_except_dims(::Any, ::Any)
-
-# NNlib Functions
-function ChainRulesCore.rrule(::typeof(batchnorm), g::CuArray{T}, b::CuArray{T},
-                              x::Union{CuArray{T, 4}, CuArray{T, 5}}, running_mean,
-                              running_var, momentum; kwargs...) where {T <: CUDNNFloat}
-    y = batchnorm(g, b, x, running_mean, running_var, momentum; kwargs...)
-    function batchnorm_pullback(dy)
-        dg, db, dx = ∇batchnorm(g, b, x, dy, running_mean, running_var, momentum; kwargs...)
-        return NoTangent(), dg, db, dx, NoTangent(), NoTangent(), NoTangent()
-    end
-    return y, batchnorm_pullback
-end
-
-function ChainRulesCore.rrule(::typeof(dropout), rng::AbstractRNG, x::AbstractArray{T, N},
-                              p::T, q::T, dims, t::Val{training}) where {T, N, training}
-    y, mask, rng = dropout(rng, x, p, q, dims, t)
-    function dropout_pullback((dy, dmask, drng))
-        return (NoTangent(), NoTangent(), dy .* mask, NoTangent(), NoTangent(), NoTangent(),
-                NoTangent())
-    end
-    return (y, mask, rng), dropout_pullback
-end
+ChainRulesCore.@non_differentiable _affine(::Any)
+ChainRulesCore.@non_differentiable _track_stats(::Any)
+ChainRulesCore.@non_differentiable _conv_transpose_dims(::Any...)
+ChainRulesCore.@non_differentiable _calc_padding(::Any...)
 
 # Utilities
-
-function ChainRulesCore.rrule(::typeof(_reshape_into_proper_shape), ::Nothing, y)
-    function _reshape_into_proper_shape_pullback(dx)
-        return NoTangent(), NoTangent(), NoTangent()
-    end
-    return nothing, _reshape_into_proper_shape_pullback
-end
-
-function ChainRulesCore.rrule(::typeof(_reshape_into_proper_shape), x, y)
-    res = _reshape_into_proper_shape(x, y)
-    function _reshape_into_proper_shape_pullback(dx)
-        return NoTangent(), reshape(dx, size(x)), NoTangent()
-    end
-    return res, _reshape_into_proper_shape_pullback
-end
-
 function ChainRulesCore.rrule(::typeof(merge), nt1::NamedTuple{F1},
                               nt2::NamedTuple{F2}) where {F1, F2}
     y = merge(nt1, nt2)
@@ -58,6 +20,9 @@ function ChainRulesCore.rrule(::typeof(merge), nt1::NamedTuple{F1},
                            for f1 in F1))
         dnt2 = NamedTuple((f2 => getproperty(dy, f2) for f2 in F2))
         return (NoTangent(), dnt1, dnt2)
+    end
+    function merge_pullback(dy::Union{NoTangent, ZeroTangent})
+        return (NoTangent(), NoTangent(), NoTangent())
     end
     return y, merge_pullback
 end
@@ -89,13 +54,18 @@ function ChainRulesCore.rrule(::typeof(collect), v::Vector)
     return y, collect_pullback
 end
 
+function ChainRulesCore.rrule(::typeof(copy), x)
+    copy_pullback(dy) = (NoTangent(), dy)
+    return copy(x), copy_pullback
+end
+
 # Zygote Fixes
 function Zygote.accum(x::ComponentArray, ys::ComponentArray...)
     return ComponentArray(Zygote.accum(getdata(x), getdata.(ys)...), getaxes(x))
 end
 
 # Adapt Interface
-function ChainRulesCore.rrule(::typeof(Array), x::CUDA.CuArray)
+function ChainRulesCore.rrule(::Type{Array}, x::CUDA.CuArray)
     return Array(x), d -> (NoTangent(), CUDA.cu(d))
 end
 
