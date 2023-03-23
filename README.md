@@ -7,7 +7,7 @@
 
 [![CI](https://github.com/avik-pal/Lux.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/avik-pal/Lux.jl/actions/workflows/CI.yml)
 [![CI Nightly](https://github.com/avik-pal/Lux.jl/actions/workflows/CINightly.yml/badge.svg)](https://github.com/avik-pal/Lux.jl/actions/workflows/CINightly.yml)
-[![codecov](https://codecov.io/gh/avik-pal/Lux.jl/branch/main/graph/badge.svg?token=IMqBM1e3hz)](https://codecov.io/gh/avik-pal/Lux.jl)
+[![codecov](https://codecov.io/gh/avik-pal/Lux.jl/branch/main/graph/badge.svg?flag=Lux&token=IMqBM1e3hz)](https://codecov.io/gh/avik-pal/Lux.jl)
 [![Package Downloads](https://shields.io/endpoint?url=https://pkgs.genieframework.com/api/v1/badge/Lux)](https://pkgs.genieframework.com?packages=Lux)
 
 [![ColPrac: Contributor's Guide on Collaborative Practices for Community Packages](https://img.shields.io/badge/ColPrac-Contributor's%20Guide-blueviolet)](https://github.com/SciML/ColPrac)
@@ -47,7 +47,7 @@ y, st = Lux.apply(model, x, ps, st)
 gs = gradient(p -> sum(Lux.apply(model, x, p, st)[1]), ps)[1]
 
 # Optimization
-st_opt = Optimisers.setup(Optimisers.ADAM(0.0001), ps)
+st_opt = Optimisers.setup(Optimisers.Adam(0.0001), ps)
 st_opt, ps = Optimisers.update(st_opt, ps, gs)
 ```
 
@@ -62,6 +62,67 @@ Checkout our [Ecosystem](http://lux.csail.mit.edu/dev/introduction/ecosystem/) p
 ## Getting Help
 
 For usage related questions, please use [Github Discussions](https://github.com/avik-pal/Lux.jl/discussions) or [JuliaLang Discourse (machine learning domain)](https://discourse.julialang.org/c/domain/ml/) which allows questions and answers to be indexed. To report bugs use [github issues](https://github.com/avik-pal/Lux.jl/issues) or even better send in a [pull request](https://github.com/avik-pal/Lux.jl/pulls).
+
+
+## Package Ecosystem Structure
+
+Structure of the packages part of the `Lux.jl` Universe[^1]: (Rounded Rectangles denote packages maintained by `Lux.jl` developers)
+
+[^1]: These packages only constitute a subset of the ecosystem. Specifically these are the packages which the maintainers of Lux.jl have personally tested out. If you want a new package to be listed here, please open an issue.
+
+```mermaid
+flowchart LR
+    subgraph Interface
+        LuxCore(LuxCore)
+    end
+    subgraph Backend
+        LuxLib(LuxLib)
+        NNlib
+        CUDA
+    end
+    subgraph ExternalML[External ML Packages]
+        Flux
+        Metalhead
+    end
+    subgraph CompViz[Computer Vision]
+        Boltz(Boltz)
+    end
+    subgraph SciML[Scientific Machine Learning]
+        DeepEquilibriumNetworks(DeepEquilibriumNetworks)
+        DiffEqFlux(DiffEqFlux)
+        NeuralPDE[Neural PDE: PINNs]
+    end
+    subgraph AD[Automatic Differentiation]
+        Zygote
+        Enzyme["Enzyme (experimental)"]
+    end
+    subgraph Dist[Distributed Training]
+        FluxMPI(FluxMPI)
+    end
+    subgraph SerializeModels[Serialize Models]
+        Serial[Serialization]
+        JLD2
+        BSON
+    end
+    subgraph Opt[Optimization]
+        Optimisers
+        Optimization
+    end
+    subgraph Parameters
+        ComponentArrays
+    end
+    Lux(Lux)
+    Parameters --> Lux
+    LuxCore --> Lux
+    Backend --> Lux
+    Lux --> SciML
+    AD --> Lux
+    Lux --> Dist
+    Lux --> SerializeModels
+    Lux --> Opt
+    Lux --> CompViz
+    ExternalML -.-> CompViz
+```
 
 ## Related Projects
 

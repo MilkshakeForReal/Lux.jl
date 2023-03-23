@@ -81,6 +81,40 @@ function glorot_normal(rng::AbstractRNG, dims::Integer...; gain::Real=1)
     return randn(rng, Float32, dims...) .* std
 end
 
+"""
+    kaiming_uniform(rng::AbstractRNG, size...; gain = √2f0)
+
+Return an `Array{Float32}` of the given `size` containing random numbers drawn from a
+uniform distribution on the interval `[-x, x]`, where `x = gain * sqrt(3/fan_in)`.
+
+# References
+
+[1] He, Kaiming, et al. "Delving deep into rectifiers: Surpassing human-level performance on
+imagenet classification." _Proceedings of the IEEE international conference on computer
+vision_. 2015.
+"""
+function kaiming_uniform(rng::AbstractRNG, dims::Integer...; gain::Real=√2.0f0)
+    bound = Float32(√3.0f0 * gain / sqrt(first(_nfan(dims...))))
+    return (rand(rng, Float32, dims...) .- 0.5f0) .* 2bound
+end
+
+"""
+    kaiming_normal(rng::AbstractRNG, size...; gain = √2f0)
+
+Return an `Array{Float32}` of the given `size` containing random numbers taken from a normal
+distribution standard deviation `gain / sqrt(fan_in)`
+
+# References
+
+[1] He, Kaiming, et al. "Delving deep into rectifiers: Surpassing human-level performance on
+imagenet classification." _Proceedings of the IEEE international conference on computer
+vision_. 2015.
+"""
+function kaiming_normal(rng::AbstractRNG, dims::Integer...; gain::Real=√2.0f0)
+    std = Float32(gain / sqrt(first(_nfan(dims...))))
+    return randn(rng, Float32, dims...) .* std
+end
+
 # PRNG Handling
 """
     replicate(rng::AbstractRNG)
@@ -137,24 +171,6 @@ function _calc_padding(::SamePad, k::NTuple{N, T}, dilation, stride) where {N, T
     return Tuple(mapfoldl(i -> [cld(i, 2), fld(i, 2)], vcat, pad_amt))
 end
 
-# Handling ComponentArrays
-function Functors.functor(::Type{<:ComponentArray}, c)
-    return NamedTuple{propertynames(c)}(getproperty.((c,), propertynames(c))),
-           ComponentArray
-end
-
-Optimisers.setup(opt::AbstractRule, ps::ComponentArray) = Optimisers.setup(opt, getdata(ps))
-
-function Optimisers.update(tree, ps::ComponentArray, gs::ComponentArray)
-    tree, ps_new = Optimisers.update(tree, getdata(ps), getdata(gs))
-    return tree, ComponentArray(ps_new, getaxes(ps))
-end
-
-function Optimisers.update!(tree::Optimisers.Leaf, ps::ComponentArray, gs::ComponentArray)
-    tree, ps_new = Optimisers.update!(tree, getdata(ps), getdata(gs))
-    return tree, ComponentArray(ps_new, getaxes(ps))
-end
-
 # Getting typename
 get_typename(::T) where {T} = Base.typename(T).wrapper
 
@@ -201,10 +217,59 @@ end
     end
 end
 
-@inline function _getproperty(x::ComponentArray, ::Val{prop}) where {prop}
-    return prop in propertynames(x) ? getproperty(x, prop) : nothing
+@inline function _eachslice(x::AbstractArray, ::Val{dims}) where {dims}
+    return [selectdim(x, dims, i) for i in axes(x, dims)]
 end
 
-@inline function _eachslice(x::T, ::Val{dims}) where {T <: AbstractArray, dims}
-    return [selectdim(x, dims, i) for i in axes(x, dims)]
+function ∇_eachslice(Δ_raw, x::AbstractArray, ::Val{dims}) where {dims}
+    Δs = CRC.unthunk(Δ_raw)
+    i1 = findfirst(Δ -> Δ isa AbstractArray, Δs)
+    i1 === nothing && zero.(x)  # all slices are Zero!
+    Δ = similar(x)
+    for i in axes(x, dims)
+        Δi = selectdim(Δ, dims, i)
+        if Δi isa CRC.AbstractZero
+            fill!(Δi, 0)
+        else
+            copyto!(Δi, Δs[i])
+        end
+    end
+    return CRC.ProjectTo(x)(Δ)
+end
+
+# Backend Integration
+## Convolution
+@inline _conv(x, weight, cdims) = conv(x, weight, cdims)
+
+@inline function _conv(x::SubArray{T, N, <:CuArray}, weight, cdims) where {T, N}
+    return conv(copy(x), weight, cdims)
+end
+
+@inline _conv_transpose(x, weight, cdims) = ∇conv_data(x, weight, cdims)
+
+@inline function _conv_transpose(x::SubArray{T, N, <:CuArray}, weight, cdims) where {T, N}
+    return ∇conv_data(copy(x), weight, cdims)
+end
+
+function _conv_transpose_dims(x::AbstractArray, weight::AbstractArray; padding, stride,
+                              dilation, groups)
+    # Calculate size of "input", from ∇conv_data()'s perspective...
+    combined_pad = (padding[1:2:end] .+ padding[2:2:end])
+    I = (size(x)[1:(end - 2)] .- 1) .* stride .+ 1 .+
+        (size(weight)[1:(end - 2)] .- 1) .* dilation .- combined_pad
+    C_in = size(weight)[end - 1] * groups
+    batch_size = size(x)[end]
+    # Create DenseConvDims() that looks like the corresponding conv()
+    w_size = size(weight)
+    return DenseConvDims((I..., C_in, batch_size), w_size; stride, padding, dilation,
+                         groups)
+end
+
+## Adaptive Pooling
+@inline function compute_adaptive_pooling_dims(x::AbstractArray, outsize)
+    insize = size(x)[1:(end - 2)]
+    stride = insize .÷ outsize
+    k = insize .- (outsize .- 1) .* stride
+    pad = 0
+    return PoolDims(x, k; padding=pad, stride=stride)
 end

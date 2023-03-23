@@ -106,7 +106,7 @@ end
 
 function alpha_dropout(rng::AbstractRNG, x::AbstractArray, p, ::Val{true}, α, A, B)
     rng = _replicate(rng)
-    noise = rand!(rng, similar(x))
+    noise = rand!(rng, similar(x, _dropout_fptype(x)))
     return (A .* ifelse.(noise .> p, x, α) .+ B), rng
 end
 
@@ -120,8 +120,10 @@ end
 
 @inline _dropout_kernel(y, p, invp) = y > p ? invp : oftype(y, 0)
 
+@inline _dropout_fptype(x) = float(real(eltype(x)))
+
 @inline function _generate_dropout_mask(rng::AbstractRNG, x, p, invp; dims)
-    realfptype = float(real(eltype(x)))
+    realfptype = _dropout_fptype(x)
     y = rand!(rng, similar(x, realfptype, _dropout_shape(x, dims)))
     y .= _dropout_kernel.(y, p, invp)
     return y

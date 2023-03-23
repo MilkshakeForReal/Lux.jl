@@ -4,20 +4,15 @@ struct LuxCPUAdaptor <: LuxDeviceAdaptor end
 struct LuxCUDAAdaptor <: LuxDeviceAdaptor end
 
 adapt_storage(::LuxCUDAAdaptor, x) = CUDA.cu(x)
-adapt_storage(::LuxCUDAAdaptor, x::FillArrays.AbstractFill) = CUDA.cu(collect(x))
-adapt_storage(::LuxCUDAAdaptor, x::Zygote.OneElement) = CUDA.cu(collect(x))
 adapt_storage(::LuxCUDAAdaptor, rng::AbstractRNG) = rng
 
 function adapt_storage(::LuxCPUAdaptor,
-                       x::Union{AbstractRange, FillArrays.AbstractFill, Zygote.OneElement,
-                                SparseArrays.AbstractSparseArray})
+                       x::Union{AbstractRange, SparseArrays.AbstractSparseArray})
     return x
 end
 adapt_storage(::LuxCPUAdaptor, x::AbstractArray) = adapt(Array, x)
 adapt_storage(::LuxCPUAdaptor, rng::AbstractRNG) = rng
-# TODO(@avik-pal): SparseArrays
-function adapt_storage(::LuxCPUAdaptor,
-                       x::CUDA.CUSPARSE.CUDA.CUSPARSE.AbstractCuSparseMatrix)
+function adapt_storage(::LuxCPUAdaptor, x::CUDA.CUSPARSE.AbstractCuSparseMatrix)
     return adapt(Array, x)
 end
 
@@ -48,7 +43,7 @@ end
 function check_use_cuda()
     if use_cuda[] === nothing
         use_cuda[] = CUDA.functional()
-        if use_cuda[] && !CUDA.has_cudnn()
+        if use_cuda[] && !cuDNN.has_cudnn()
             @warn """CUDA.jl found cuda, but did not find libcudnn. Some functionality
                      will not be available."""
         end

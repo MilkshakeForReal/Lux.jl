@@ -25,6 +25,7 @@ basic building blocks which can be seamlessly composed to create complex trainin
 Lux.Training.AbstractVJP
 Lux.Training.backend
 Lux.Training.EnzymeVJP
+Lux.Training.TrackerVJP
 Lux.Training.YotaVJP
 Lux.Training.ZygoteVJP
 Lux.Training.TrainState
@@ -62,6 +63,12 @@ For detailed usage example look at the [manual page](../manual/freezing_paramete
 ```@docs
 Lux.layer_map
 Lux.@layer_map
+```
+
+## Tied Parameters
+
+```@docs
+Lux.share_parameters
 ```
 
 ## Index

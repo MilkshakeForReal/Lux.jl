@@ -1,10 +1,15 @@
 # # MNIST Classification using Neural ODEs
 
+# To understand Neural ODEs, users should look up
+# [these lecture notes](https://book.sciml.ai/notes/11/). We recommend users to directly use
+# [DiffEqFlux.jl](https://docs.sciml.ai/DiffEqFlux/stable/), instead of implementing
+# Neural ODEs from scratch.
+
 # ## Package Imports
 using Lux
 using Pkg #hide
 Pkg.activate(joinpath(dirname(pathof(Lux)), "..", "examples")) #hide
-using ComponentArrays, CUDA, DiffEqSensitivity, NNlib, Optimisers, OrdinaryDiffEq, Random,
+using ComponentArrays, CUDA, SciMLSensitivity, NNlib, Optimisers, OrdinaryDiffEq, Random,
       Statistics, Zygote, OneHotArrays
 import MLDatasets: MNIST
 import MLUtils: DataLoader, splitobs
@@ -32,8 +37,8 @@ end
 
 # ## Define the Neural ODE Layer
 #
-# The NeuralODE is a ContainerLayer, which stores a `model`. The parameters and states of the NeuralODE are
-# same as those of the underlying model.
+# The NeuralODE is a ContainerLayer, which stores a `model`. The parameters and states of
+# the NeuralODE are same as those of the underlying model.
 struct NeuralODE{M <: Lux.AbstractExplicitLayer, So, Se, T, K} <:
        Lux.AbstractExplicitContainerLayer{(:model,)}
     model::M
@@ -127,6 +132,7 @@ function train()
         iterator = CUDA.functional() ? CuIterator(train_dataloader) : train_dataloader
         for (x, y) in iterator
             (l, st), back = pullback(p -> loss(x, y, model, p, st), ps)
+            ### We need to add `nothing`s equal to the number of returned values - 1
             gs = back((one(l), nothing))[1]
             st_opt, ps = Optimisers.update(st_opt, ps, gs)
         end

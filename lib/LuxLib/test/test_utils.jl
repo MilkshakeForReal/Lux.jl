@@ -1,4 +1,5 @@
-using CUDA, FiniteDifferences, LuxLib, Test, Zygote
+using CUDA, FiniteDifferences, LuxLib, Test
+using ReverseDiff, Tracker, Zygote  # AD Packages
 
 const LUXLIB_TESTING_MODE = get(ENV, "LUXLIB_TESTING_MODE", :all)
 
@@ -42,21 +43,38 @@ end
 
 Base.isapprox(::Nothing, v::AbstractArray; kwargs...) = length(v) == 0
 Base.isapprox(v::AbstractArray, ::Nothing; kwargs...) = length(v) == 0
+Base.isapprox(v::NamedTuple, ::Nothing; kwargs...) = length(v) == 0
+Base.isapprox(::Nothing, v::NamedTuple; kwargs...) = length(v) == 0
+Base.isapprox(v::Tuple, ::Nothing; kwargs...) = length(v) == 0
+Base.isapprox(::Nothing, v::Tuple; kwargs...) = length(v) == 0
+Base.isapprox(x::AbstractArray, y::NamedTuple; kwargs...) = length(x) == 0 && length(y) == 0
+Base.isapprox(x::NamedTuple, y::AbstractArray; kwargs...) = length(x) == 0 && length(y) == 0
+Base.isapprox(x::AbstractArray, y::Tuple; kwargs...) = length(x) == 0 && length(y) == 0
+Base.isapprox(x::Tuple, y::AbstractArray; kwargs...) = length(x) == 0 && length(y) == 0
 
 # JET Tests
 function run_JET_tests(f, args...; call_broken=false, opt_broken=false, kwargs...)
     @static if VERSION >= v"1.7"
-        test_call(f, typeof.(args); broken=call_broken)
+        test_call(f, typeof.(args); broken=call_broken, target_modules=(LuxLib,))
         test_opt(f, typeof.(args); broken=opt_broken, target_modules=(LuxLib,))
     end
 end
 
 # Test the gradients generated using AD against the gradients generated using Finite
 # Differences
+# Currently this is called exclusively on CPU. So we can simply use ReverseDiff.
+# However this function has evolved to be more general and can be used to test GPU autodiff.
 function test_gradient_correctness_fdm(f::Function, args...; kwargs...)
-    gs_ad = Zygote.gradient(f, args...)
+    gs_ad_zygote = Zygote.gradient(f, args...)
+    gs_ad_tracker = Tracker.gradient(f, args...)
+    gs_ad_reversediff = ReverseDiff.gradient(f, args)
     gs_fdm = FiniteDifferences.grad(FiniteDifferences.central_fdm(8, 1), f, args...)
-    for (g_ad, g_fdm) in zip(gs_ad, gs_fdm)
-        @test isapprox(g_ad, g_fdm; kwargs...)
+    for (g_ad_zygote, g_ad_tracker, g_ad_reverse_diff, g_fdm) in zip(gs_ad_zygote,
+                                                                     gs_ad_tracker,
+                                                                     gs_ad_reversediff,
+                                                                     gs_fdm)
+        @test isapprox(g_ad_zygote, g_fdm; kwargs...)
+        @test isapprox(Tracker.data(g_ad_tracker), g_ad_zygote; kwargs...)
+        @test isapprox(ReverseDiff.value(g_ad_reverse_diff), g_ad_zygote; kwargs...)
     end
 end

@@ -2,7 +2,7 @@ _div_idx(idx, n) = div(idx - 1, n) + 1
 _mod_idx(idx, n) = mod(idx - 1, n) + 1
 
 @static if VERSION >= v"1.7"
-    get_device(x) = KernelAbstractions.get_device(x)
+    get_device(x) = KA.get_device(x)
 else
     # KA.get_device is not present in <= v0.7 but that is what works on julia 1.6
     get_device(x::CuArray) = CUDADevice()
@@ -24,9 +24,9 @@ CRC.@non_differentiable _get_device(::Any)
 function _assert_same_device(args...)
     devs = _get_device(args)
     if !all(devs .== (first(devs),))
-        throw(ArgumentError("All arguments must be on the same device. This error is " *
-                            "encountered if you are calling a function with a mix of CPU " *
-                            "and GPU arrays."))
+        throw(ArgumentError("All arguments must be on the same device. This error is
+                             encountered if you are calling a function with a mix of CPU
+                             and GPU arrays."))
     end
     return
 end

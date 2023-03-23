@@ -75,7 +75,7 @@ include("../test_utils.jl")
         ps, st = Lux.setup(rng, layer)
 
         @test size(layer(x, ps, st)[1])[1:(end - 2)] == cld.(size(x)[1:(end - 2)], k)
-        run_JET_tests(layer, x, ps, st; call_broken=length(k) == 1)
+        run_JET_tests(layer, x, ps, st)
     end
 end
 
@@ -88,7 +88,7 @@ end
 
         @test size(ps.weight) == (3, 3, 2)
         @test size(layer(x, ps, st)[1]) == (2, 2, 1)
-        run_JET_tests(layer, x, ps, st; call_broken=true)
+        run_JET_tests(layer, x, ps, st)
         test_gradient_correctness_fdm((x, ps) -> sum(layer(x, ps, st)[1]), x, ps;
                                       atol=1.0f-3, rtol=1.0f-3)
 
@@ -200,7 +200,7 @@ end
         ps, st = Lux.setup(rng, layer)
 
         @test size(layer(x, ps, st)[1]) == size(x)
-        run_JET_tests(layer, x, ps, st; call_broken=length(k) == 1)
+        run_JET_tests(layer, x, ps, st)
         test_gradient_correctness_fdm((x, ps) -> sum(layer(x, ps, st)[1]), x, ps;
                                       atol=1.0f-3, rtol=1.0f-3)
 
@@ -209,7 +209,7 @@ end
         ps, st = Lux.setup(rng, layer)
 
         @test size(layer(x, ps, st)[1]) == size(x)
-        run_JET_tests(layer, x, ps, st; call_broken=length(k) == 1)
+        run_JET_tests(layer, x, ps, st)
         test_gradient_correctness_fdm((x, ps) -> sum(layer(x, ps, st)[1]), x, ps;
                                       atol=1.0f-3, rtol=1.0f-3)
 
@@ -219,7 +219,7 @@ end
         ps, st = Lux.setup(rng, layer)
 
         @test size(layer(x, ps, st)[1])[1:(end - 2)] == cld.(size(x)[1:(end - 2)], stride)
-        run_JET_tests(layer, x, ps, st; call_broken=length(k) == 1)
+        run_JET_tests(layer, x, ps, st)
         test_gradient_correctness_fdm((x, ps) -> sum(layer(x, ps, st)[1]), x, ps;
                                       atol=1.0f-3, rtol=1.0f-3)
     end
@@ -416,7 +416,7 @@ end
         ps, st = Lux.setup(rng, layer)
 
         @test size(layer(x, ps, st)[1]) == size(x)
-        run_JET_tests(layer, x, ps, st; call_broken=length(k) == 1)
+        run_JET_tests(layer, x, ps, st)
         test_gradient_correctness_fdm((x, ps) -> sum(layer(x, ps, st)[1]), x, ps;
                                       atol=1.0f-3, rtol=1.0f-3)
 
@@ -425,7 +425,7 @@ end
         ps, st = Lux.setup(rng, layer)
 
         @test size(layer(x, ps, st)[1]) == size(x)
-        run_JET_tests(layer, x, ps, st; call_broken=length(k) == 1)
+        run_JET_tests(layer, x, ps, st)
         test_gradient_correctness_fdm((x, ps) -> sum(layer(x, ps, st)[1]), x, ps;
                                       atol=1.0f-3, rtol=1.0f-3)
 
@@ -435,7 +435,7 @@ end
         ps, st = Lux.setup(rng, layer)
 
         @test size(layer(x, ps, st)[1])[1:(end - 2)] == cld.(size(x)[1:(end - 2)], stride)
-        run_JET_tests(layer, x, ps, st; call_broken=length(k) == 1)
+        run_JET_tests(layer, x, ps, st)
         test_gradient_correctness_fdm((x, ps) -> sum(layer(x, ps, st)[1]), x, ps;
                                       atol=1.0f-3, rtol=1.0f-3)
     end
@@ -458,14 +458,20 @@ end
     display(layer)
     ps, st = Lux.setup(rng, layer)
     run_JET_tests(layer, y, ps, st; opt_broken=true)
-    @inferred layer(y, ps, st)
+    @static if VERSION >= v"1.7"
+        # Inference broken in v1.6
+        @inferred layer(y, ps, st)
+    end
     x_hat1 = layer(y, ps, st)[1]
 
     layer = ConvTranspose((3, 3), 1 => 1; use_bias=false)
     display(layer)
     ps, st = Lux.setup(rng, layer)
     run_JET_tests(layer, y, ps, st; opt_broken=true)
-    @inferred layer(y, ps, st)
+    @static if VERSION >= v"1.7"
+        # Inference broken in v1.6
+        @inferred layer(y, ps, st)
+    end
     x_hat2 = layer(y, ps, st)[1]
 
     @test size(x_hat1) == size(x_hat2) == size(x)
@@ -475,7 +481,10 @@ end
     ps, st = Lux.setup(rng, layer)
     x = rand(Float32, 5, 5, 1, 1)
     run_JET_tests(layer, x, ps, st; opt_broken=true)
-    @inferred layer(x, ps, st)
+    @static if VERSION >= v"1.7"
+        # Inference broken in v1.6
+        @inferred layer(x, ps, st)
+    end
     test_gradient_correctness_fdm((x, ps) -> sum(layer(x, ps, st)[1]), x, ps; atol=1.0f-3,
                                   rtol=1.0f-3)
 
@@ -484,7 +493,10 @@ end
     display(layer)
     ps, st = Lux.setup(rng, layer)
     run_JET_tests(layer, x, ps, st; opt_broken=true)
-    @inferred layer(x, ps, st)
+    @static if VERSION >= v"1.7"
+        # Inference broken in v1.6
+        @inferred layer(x, ps, st)
+    end
     test_gradient_correctness_fdm((x, ps) -> sum(layer(x, ps, st)[1]), x, ps; atol=1.0f-3,
                                   rtol=1.0f-3)
 
@@ -511,7 +523,7 @@ end
     layer = ConvTranspose((3,), 2 => 4; pad=SamePad(), groups=2)
     display(layer)
     ps, st = Lux.setup(rng, layer)
-    run_JET_tests(layer, x, ps, st; opt_broken=true, call_broken=true)
+    run_JET_tests(layer, x, ps, st; opt_broken=true)
     @test size(layer(x, ps, st)[1]) == (10, 4, 1)
     @test length(ps.weight) == 3 * (2 * 4) / 2
     test_gradient_correctness_fdm((x, ps) -> sum(layer(x, ps, st)[1]), x, ps; atol=1.0f-3,

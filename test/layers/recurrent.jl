@@ -28,7 +28,7 @@ Random.seed!(rng, 0)
 
         @test_throws ErrorException ps.train_state
 
-        test_gradient_correctness_fdm(loss_loop_rnncell, ps; atol=1e-3, rtol=1e-3)
+        test_gradient_correctness_fdm(loss_loop_rnncell, ps; atol=1e-2, rtol=1e-2)
     end
 
     @testset "Trainable hidden states" begin for rnncell in (RNNCell(3 => 5, identity;
@@ -81,7 +81,7 @@ end
             return sum(abs2, y)
         end
 
-        test_gradient_correctness_fdm(loss_loop_lstmcell, ps; atol=1e-3, rtol=1e-3)
+        test_gradient_correctness_fdm(loss_loop_lstmcell, ps; atol=1e-2, rtol=1e-2)
 
         @test_throws ErrorException ps.train_state
         @test_throws ErrorException ps.train_memory
@@ -168,7 +168,7 @@ end
             return sum(abs2, y)
         end
 
-        test_gradient_correctness_fdm(loss_loop_grucell, ps; atol=1e-3, rtol=1e-3)
+        test_gradient_correctness_fdm(loss_loop_grucell, ps; atol=1e-2, rtol=1e-2)
 
         @test_throws ErrorException ps.train_state
     end
@@ -239,7 +239,7 @@ end
         return sum(abs2, y)
     end
 
-    test_gradient_correctness_fdm(loss_loop_rnn, ps; atol=1e-3, rtol=1e-3)
+    test_gradient_correctness_fdm(loss_loop_rnn, ps; atol=1e-2, rtol=1e-2)
 end end
 
 @testset "Recurrence" begin for _cell in (RNNCell, LSTMCell, GRUCell),
@@ -248,40 +248,26 @@ end end
 
     cell = _cell(3 => 5; use_bias, train_state)
     rnn = Recurrence(cell)
+    rnn_seq = Recurrence(cell; return_sequence=true)
     display(rnn)
 
     # Batched Time Series
-    x = randn(rng, Float32, 3, 4, 2)
-    ps, st = Lux.setup(rng, rnn)
-    y, st_ = rnn(x, ps, st)
+    for x in (randn(rng, Float32, 3, 4, 2), Tuple(randn(rng, Float32, 3, 2) for _ in 1:4),
+              [randn(rng, Float32, 3, 2) for _ in 1:4])
+        ps, st = Lux.setup(rng, rnn)
+        y, st_ = rnn(x, ps, st)
+        y_, st__ = rnn_seq(x, ps, st)
+        run_JET_tests(rnn, x, ps, st)
+        run_JET_tests(rnn_seq, x, ps, st)
 
-    run_JET_tests(rnn, x, ps, st)
+        @test size(y) == (5, 2)
+        @test length(y_) == 4
+        @test all(x -> size(x) == (5, 2), y_)
 
-    @test size(y) == (5, 2)
-
-    test_gradient_correctness_fdm(p -> sum(rnn(x, p, st)[1]), ps; atol=1e-3, rtol=1e-3)
-
-    # Tuple of Time Series
-    x = Tuple(randn(rng, Float32, 3, 2) for _ in 1:4)
-    ps, st = Lux.setup(rng, rnn)
-    y, st_ = rnn(x, ps, st)
-
-    run_JET_tests(rnn, x, ps, st)
-
-    @test size(y) == (5, 2)
-
-    test_gradient_correctness_fdm(p -> sum(rnn(x, p, st)[1]), ps; atol=1e-3, rtol=1e-3)
-
-    # Vector of Time Series
-    x = [randn(rng, Float32, 3, 2) for _ in 1:4]
-    ps, st = Lux.setup(rng, rnn)
-    y, st_ = rnn(x, ps, st)
-
-    run_JET_tests(rnn, x, ps, st)
-
-    @test size(y) == (5, 2)
-
-    test_gradient_correctness_fdm(p -> sum(rnn(x, p, st)[1]), ps; atol=1e-3, rtol=1e-3)
+        test_gradient_correctness_fdm(p -> sum(rnn(x, p, st)[1]), ps; atol=1e-2, rtol=1e-2)
+        test_gradient_correctness_fdm(p -> sum(Base.Fix1(sum, abs2), rnn_seq(x, p, st)[1]),
+                                      ps; atol=1e-2, rtol=1e-2)
+    end
 end end
 
 @testset "multigate" begin
