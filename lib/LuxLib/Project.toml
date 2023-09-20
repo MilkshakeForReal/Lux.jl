@@ -29,7 +29,7 @@ LuxLibReverseDiffExt = "ReverseDiff"
 LuxLibTrackerExt = "Tracker"
 
 [compat]
-CUDA = "3, 4"
+CUDA = "3, 4, 5"
 CUDAKernels = "0.3, 0.4"
 ChainRulesCore = "1"
 ForwardDiff = "0.10"
